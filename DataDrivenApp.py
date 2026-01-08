@@ -20,8 +20,8 @@ list_bg = "#1a1a1a"    #listbox background
 text_bg = "#101010" #text widget background
 
 # Default font settings for readability
-DETAIL_FONT = ("Arial", 11)
-HEADER_FONT = ("Arial", 11, "bold")
+detail_font = ("Arial", 11)
+header_font = ("Arial", 11, "bold")
 #api
 class MealAPI:
     def __init__(self, base_url):
@@ -89,11 +89,11 @@ def clear_ui():
 def update_list(meals):
     clear_ui()   #clears the previous data
     if meals is None:        #error
-        status_label.config(text="There's an error. no meal or no internet connection",fg="red")
+        status_label.config(text="There's no meal or ingredient",fg="red")
         return
 
     if not meals: #if no meals
-        status_label.config(text="No meals found for this search.",fg="orange")
+        status_label.config(text="No internet connection",fg="orange")
         return
 
     for meal in meals:      #add on meal box
@@ -181,7 +181,7 @@ def show_details(event):
     details_text.insert(tk.END, "\nInstructions\n", "header")
     details_text.insert(tk.END, meal["strInstructions"])
     details_text.config(state=tk.DISABLED)  #lock the text box
-    try:
+    try:                                                            #get raw img data
         img_data = requests.get(meal["strMealThumb"], timeout=30).content
         img = Image.open(BytesIO(img_data)).resize((250, 250))
         photo = ImageTk.PhotoImage(img)
@@ -243,12 +243,12 @@ details_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 image_label = tk.Label(details_frame, bg=frame_color)
 image_label.pack(pady=5)
 
-details_text = tk.Text(details_frame, wrap=tk.WORD, bg=text_bg, fg=text_color, font=DETAIL_FONT)
+details_text = tk.Text(details_frame, wrap=tk.WORD, bg=text_bg, fg=text_color, font=detail_font)
 details_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
 #much better text
 details_text.tag_config("title", font=("Arial", 14, "bold"))
-details_text.tag_config("header", font=HEADER_FONT, foreground=accent_color)
+details_text.tag_config("header", font=header_font, foreground=accent_color)
 details_text.tag_config("chef",foreground="#00ffcc",font=("Arial", 11, "italic"),justify="right",background="#202020")
 
 text_scroll = tk.Scrollbar(details_frame, command=details_text.yview)
